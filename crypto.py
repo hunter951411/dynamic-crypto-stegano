@@ -74,8 +74,6 @@ class Crypto(object):
                 P3 = self.matrix.xor(matrixA=sub_key,
                                      matrixB=P2)
                 P = P3
-            P = self.matrix.convert_matrix_bin_to_decimal(P)
-            # cipher = self.convert_matrix_to_string(matrix=P)
             C.append(P)
         return C
 
@@ -84,14 +82,7 @@ class Crypto(object):
         perform decrypt input string with key
         """
         P = ''
-        for count in self.text:
-            # sub_c = self.text[count*16:(count+1)*16]
-            # import ipdb;ipdb.set_trace()
-            # C = self.convert_string_to_matrix(sub_c)
-            #
-            # import ipdb;ipdb.set_trace()
-            C = self.matrix.convert_matrix_demcimal_to_bin(count)
-            # import ipdb;ipdb.set_trace()
+        for C in self.text:
             for i in reversed(range(len(self.sub_keys))):
                 sub_key = copy.deepcopy(self.sub_keys[i])
                 C1 = self.matrix.xor(matrixA=sub_key,
@@ -125,11 +116,10 @@ if __name__ == '__main__':
     c = Crypto(key=key,
                text=plain_text)
     C = c.encrypt()
-    # import ipdb;ipdb.set_trace()
     print "+++++++++++++++++++++"
     print "[+] Encrypted to binary ", C
-    # with open('cipher', 'w') as f:
-    #     f.write(C)
+    with open('cipher', 'w') as f:
+        f.write(C)
     print '[+] Writen to file'
     p = Crypto(key=key,
                text=C)
