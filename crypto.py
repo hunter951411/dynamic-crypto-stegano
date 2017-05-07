@@ -24,7 +24,7 @@ class Crypto(object):
         Output: Matrix 4*4
         """
         text = [ord(x) for x in text]
-        return [[text[i + 3*j] for i in range(4)] for j in range(4)]
+        return [[text[i + 4*j] for i in range(4)] for j in range(4)]
 
     def convert_matrix_to_string(self, matrix):
         """
@@ -51,7 +51,7 @@ class Crypto(object):
         """
         perform encrypt input string using input key
         """
-        C = ''
+        C = []
         for count in range(len(self.text)/16+1):
             sub_p = ''
             if (count+1)*16 < len(self.text):
@@ -75,8 +75,8 @@ class Crypto(object):
                                      matrixB=P2)
                 P = P3
             P = self.matrix.convert_matrix_bin_to_decimal(P)
-            cipher = self.convert_matrix_to_string(matrix=P)
-            C += cipher
+            # cipher = self.convert_matrix_to_string(matrix=P)
+            C.append(P)
         return C
 
     def decrypt(self):
@@ -84,10 +84,14 @@ class Crypto(object):
         perform decrypt input string with key
         """
         P = ''
-        for count in range(len(self.text)/16):
-            sub_c = self.text[count*16:(count+1)*16]
-            C = self.convert_string_to_matrix(sub_c)
-            C = self.matrix.convert_matrix_demcimal_to_bin(C)
+        for count in self.text:
+            # sub_c = self.text[count*16:(count+1)*16]
+            # import ipdb;ipdb.set_trace()
+            # C = self.convert_string_to_matrix(sub_c)
+            #
+            # import ipdb;ipdb.set_trace()
+            C = self.matrix.convert_matrix_demcimal_to_bin(count)
+            # import ipdb;ipdb.set_trace()
             for i in reversed(range(len(self.sub_keys))):
                 sub_key = copy.deepcopy(self.sub_keys[i])
                 C1 = self.matrix.xor(matrixA=sub_key,
@@ -112,7 +116,7 @@ class Crypto(object):
 
 if __name__ == '__main__':
     key = '778b9e660d5b8c9d7247a1194b3fsthb'
-    plain_text = 'pham dang sa pham dang sa pham dang saaaa'
+    plain_text = 'saphi saphi saphi'
     print "======================"
     print "[-] Master key ", key
     print "**********************"
@@ -121,10 +125,11 @@ if __name__ == '__main__':
     c = Crypto(key=key,
                text=plain_text)
     C = c.encrypt()
+    # import ipdb;ipdb.set_trace()
     print "+++++++++++++++++++++"
     print "[+] Encrypted to binary ", C
-    with open('cipher', 'w') as f:
-        f.write(C)
+    # with open('cipher', 'w') as f:
+    #     f.write(C)
     print '[+] Writen to file'
     p = Crypto(key=key,
                text=C)
